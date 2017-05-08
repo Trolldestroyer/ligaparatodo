@@ -5,6 +5,10 @@ app.index:
     resource: "@AppBundle/Controller/IndexController.php"
     type: annotation
 
+app.entrenador:
+    resource: "@AppBundle/Controller/EntrenadorController.php"
+    type: annotation
+    prefix: /entrenador
 
 app.player:
     resource: "@AppBundle/Controller/PlayerController.php"
