@@ -19,3 +19,8 @@ app.equipo:
     resource: "@AppBundle/Controller/EquipoController.php"
     type: annotation
     prefix: /equipo
+
+app.ronda:
+    resource: "@AppBundle/Controller/RondaController.php"
+    type: annotation
+    prefix: /ronda

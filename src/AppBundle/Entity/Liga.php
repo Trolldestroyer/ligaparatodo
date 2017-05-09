@@ -53,12 +53,13 @@ class Liga
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Ronda", mappedBy="liga", cascade={"remove"})
      */
-//    private $rondas;
+    private $rondas;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Equipo", mappedBy="liga", cascade={"remove"})
      */
     private $equipos;
+
 
     /**
      * @var \DateTime
@@ -243,49 +244,7 @@ class Liga
         return $this->texto;
     }
 
-    /**
-     * Add ronda
-     *
-     * @param \AppBundle\Entity\Ronda $ronda
-     *
-     * @return Liga
-     */
-    public function addRondas(\AppBundle\Entity\Ronda $ronda)
-    {
-        $this->rondas[] = $ronda;
-        return $this;
-    }
-    /**
-     * Remove ronda
-     *
-     * @param \AppBundle\Entity\Ronda $rondas
-     */
-    public function removeRonda(\AppBundle\Entity\Ronda $rondas)
-    {
-        $this->rondas->removeElement($rondas);
-    }
 
-    /**
-     * Add equipo
-     *
-     * @param \AppBundle\Entity\Equipo $equipo
-     *
-     * @return Liga
-     */
-    public function addEquipo(\AppBundle\Entity\Equipo $equipo)
-    {
-        $this->equipos[] = $equipo;
-        return $this;
-    }
-    /**
-     * Remove equipos
-     *
-     * @param \AppBundle\Entity\Equipos $equipos
-     */
-    public function removeEquipo(\AppBundle\Entity\Equipo $equipos)
-    {
-        $this->equipos->removeElement($equipos);
-    }
 
 }
 

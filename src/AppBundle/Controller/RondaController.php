@@ -7,15 +7,13 @@
  */
 namespace AppBundle\Controller;
 use AppBundle\Entity\Image;
-use AppBundle\Entity\Equipo;
-use AppBundle\Entity\Player;
+use AppBundle\Entity\Ronda;
 use AppBundle\Form\ImageType;
-use AppBundle\Form\EquipoType;
-use AppBundle\Form\PlayerType;
+use AppBundle\Form\RondaType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-class EquipoController extends Controller
+class RondaController extends Controller
 {
     /**
      * @Route("/", name="app_equip_index")
@@ -26,29 +24,29 @@ class EquipoController extends Controller
         $m = $this->getDoctrine()->getManager();
         $repo=$m->getRepository('AppBundle:Liga');
         $liga = $repo->findAll();
-        return $this->render(':equipo:index1.html.twig',
+        return $this->render(':ronda:index1.html.twig',
             [
                 'liga'=> $liga,
             ]
         );
     }
     /**
-     * @Route("/{slug}.html", name="app_equipo_index")
+     * @Route("/{slug}.html", name="app_ronda_index")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function indexEquipoAction($slug)
+    public function indexRondaAction($slug)
     {
         $m = $this->getDoctrine()->getManager();
         $repo=$m->getRepository('AppBundle:Liga');
         $liga = $repo->find($slug);
-        return $this->render(':equipo:index.html.twig',
+        return $this->render(':ronda:index.html.twig',
             [
                 'liga'=> $liga,
             ]
         );
     }
     /**
-     * @Route("/upload", name="app_equipos_upload")
+     * @Route("/upload", name="app_ronda_upload")
      */
     public function uploadAction(Request $request)
     {
@@ -60,24 +58,24 @@ class EquipoController extends Controller
                 $m = $this->getDoctrine()->getManager();
                 $m->persist($p);
                 $m->flush();
-                return $this->redirectToRoute('app_equipos_index');
+                return $this->redirectToRoute('app_ronda_index');
             }
         }
-        return $this->render(':equipo:upload.html.twig', [
+        return $this->render(':ronda:upload.html.twig', [
             'form' => $form->createView(),
         ]);
     }
     /**
-     * @Route("/insertEquipo/{id}", name="app_equipo_insertEquipo")
+     * @Route("/insertRonda/{id}", name="app_ronda_insertRonda")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function insertEquipoAction($id, Request $request)
+    public function insertRondaAction($id, Request $request)
     {
-        $c = new Equipo();
+        $c = new Ronda();
         if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             throw $this->createAccessDeniedException();
         }
-        $form = $this->createForm(EquipoType::class, $c);
+        $form = $this->createForm(RondaType::class, $c);
         if ($request->getMethod() == Request::METHOD_POST) {
             $form->handleRequest($request);
             if ($form->isValid()) {
@@ -89,102 +87,74 @@ class EquipoController extends Controller
                 $c->setLiga($liga);
                 $m->persist($c);
                 $m->flush();
-                return $this->redirectToRoute('app_equipo_index', ['slug' => $id]);
+                return $this->redirectToRoute('app_ronda_index', ['slug' => $id]);
             }
         }
-        return $this->render(':equipo:form.html.twig', [
+        return $this->render(':ronda:form.html.twig', [
             'form' => $form->createView(),
         ]);
     }
     /**
-     * @Route("/removeEquipo/{id}", name="app_equipo_removeEquipo")
+     * @Route("/removeRonda/{id}", name="app_ronda_removeRonda")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function removeEquipoAction($id)
+    public function removeRondaAction($id)
     {
         if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             throw $this->createAccessDeniedException();
         }
         $m = $this->getDoctrine()->getManager();
-        $repo = $m->getRepository('AppBundle:Equipo');
-        $equipo = $repo->find($id);
-        $liga = $equipo->getLiga();
+        $repo = $m->getRepository('AppBundle:Ronda');
+        $ronda = $repo->find($id);
+        $liga = $ronda->getLiga();
         $ligaid = $liga->getId();
-        $creator= $equipo->getCreador().$id;
+        $creator= $ronda->getCreador().$id;
         $current = $this->getUser().$id;
         if (($current!=$creator)&&(!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN'))) {
             throw $this->createAccessDeniedException();
         }
-        $m->remove($equipo);
+        $m->remove($ronda);
         $m->flush();
-        return $this->redirectToRoute('app_equipo_index', ['slug' => $ligaid]);
+        return $this->redirectToRoute('app_ronda_index', ['slug' => $ligaid]);
     }
     /**
-     * @Route("/updateEquipo/{id}", name="app_equipo_updateEquipo")
+     * @Route("/updateRonda/{id}", name="app_ronda_updateRonda")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function updateEquipoAction($id, Request $request)
+    public function updateRondaAction($id, Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             throw $this->createAccessDeniedException();
         }
         $m = $this->getDoctrine()->getManager();
-        $repo = $m->getRepository('AppBundle:Equipo');
-        $equipo=$repo->find($id);
-        $liga = $equipo->getLiga();
+        $repo = $m->getRepository('AppBundle:Ronda');
+        $ronda=$repo->find($id);
+        $liga = $ronda->getLiga();
         $ligaid = $liga->getId();
-        $form = $this->createForm(EquipoType::class, $equipo);
+        $form = $this->createForm(RondaType::class, $ronda);
         if ($request->getMethod() == Request::METHOD_POST) {
             $form->handleRequest($request);
             if ($form->isValid()) {
-                $m->persist($equipo);
+                $m->persist($ronda);
                 $m->flush();
-                return $this->redirectToRoute('app_equipo_index', ['slug' => $ligaid]);
+                return $this->redirectToRoute('app_ronda_index', ['slug' => $ligaid]);
             }
         }
-        return $this->render(':equipo:form.html.twig', [
+        return $this->render(':ronda:form.html.twig', [
             'form' => $form->createView(),
         ]);
     }
     /**
-     * @Route("detail/{slug}.html", name="app_equipo_show")
+     * @Route("detail/{slug}.html", name="app_ronda_show")
      */
     public function showAction($slug)
     {
         $m = $this->getDoctrine()->getManager();
-        $repository= $m->getRepository('AppBundle:Equipo');
-        $equipo=$repository->find($slug);
-        return $this->render(':equipo:equipo.html.twig', [
-            'equipo'   => $equipo,
+        $repository= $m->getRepository('AppBundle:Ronda');
+        $ronda=$repository->find($slug);
+        return $this->render(':ronda:ronda.html.twig', [
+            'ronda'   => $ronda,
         ]);
     }
-    /**
-     * @Route("/addPlayer/{id}", name="app_player_addPlayer")
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function addPlayerAction($id, Request $request)
-    {
-        $c = new Player();
-        if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
-            throw $this->createAccessDeniedException();
-        }
-        $form = $this->createForm(PlayerType::class, $c);
-        if ($request->getMethod() == Request::METHOD_POST) {
-            $form->handleRequest($request);
-            if ($form->isValid()) {
-                $m = $this->getDoctrine()->getManager();
-                $repo = $m->getRepository('AppBundle:Equipo');
-                $equipo = $repo->find($id);
-                $user = $this->get('security.token_storage')->getToken()->getUser();
-                $c->setCreador($user);
-                $c->setEquipo($equipo);
-                $m->persist($c);
-                $m->flush();
-                return $this->redirectToRoute('app_equipo_show', ['slug' => $id]);
-            }
-        }
-        return $this->render(':player:form.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
+
 }

@@ -40,14 +40,14 @@ class Ronda
      *
      * @ORM\Column(name="comentarios", type="string", length=255)
      */
-    private $comentarios;
+    //private $comentarios;
 
     /**
      * @var string
      *
      * @ORM\Column(name="partidos", type="string", length=255)
      */
-    private $partidos;
+   // private $partidos;
 
     /**
      * @var \DateTime
@@ -63,7 +63,22 @@ class Ronda
      */
     private $createdAt;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Liga", inversedBy="liga")
+     */
+    private $liga;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Trascastro\UserBundle\Entity\User", inversedBy="rondasCreadas")
+     */
+    private $creador;
+
+    public function __construct()
+    {
+
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = $this->createdAt;
+    }
     /**
      * Get id
      *
@@ -72,6 +87,38 @@ class Ronda
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLiga()
+    {
+        return $this->liga;
+    }
+
+    /**
+     * @param mixed $liga
+     */
+    public function setLiga($liga)
+    {
+        $this->liga = $liga;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreador()
+    {
+        return $this->creador;
+    }
+
+    /**
+     * @param mixed $creador
+     */
+    public function setCreador($creador)
+    {
+        $this->creador = $creador;
     }
 
     /**
