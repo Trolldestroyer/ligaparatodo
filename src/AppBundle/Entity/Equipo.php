@@ -76,9 +76,9 @@ class Equipo
     private $puntos;
 
     /**
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Entrenador", mappedBy="entrenador")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Entrenador", mappedBy="equipo", cascade={"remove"})
      */
- //   private $entrenador;
+    private $entrenadores;
 
     /**
      * @ORM\ManyToOne(targetEntity="Trascastro\UserBundle\Entity\User", inversedBy="equiposCreados")
@@ -94,6 +94,7 @@ class Equipo
     {
         $this->puntos = 0;
         $this->trofeos = "";
+        $this->entrenadores = new ArrayCollection();
         $this->players = new ArrayCollection();
         $this->comentarios = new ArrayCollection();
         $this->createdAt = new \DateTime();
@@ -135,17 +136,17 @@ class Equipo
     /**
      * @return mixed
      */
-    public function getEntrenador()
+    public function getEntrenadores()
     {
-        return $this->entrenador;
+        return $this->entrenadores;
     }
 
     /**
-     * @param mixed $entrenador
+     * @param mixed $entrenadores
      */
-    public function setEntrenador($entrenador)
+    public function setEntrenador($entrenadores)
     {
-        $this->entrenador = $entrenador;
+        $this->entrenadores = $entrenadores;
     }
 
     /**

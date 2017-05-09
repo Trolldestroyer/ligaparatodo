@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 class EntrenadorController extends Controller
 {
     /**
-     * @Route("/entrenador", name="app_entrenador_entrenador")
+     * @Route("/", name="app_entrenador_entrenado")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function indexAction()
@@ -24,11 +24,41 @@ class EntrenadorController extends Controller
         $entrenadores = $repo->findAll();
         return $this->render(':entrenador:entrenador.html.twig',
             [
-                'entrenador'=> $entrenadores,
+                'entrenadores'=> $entrenadores,
+            ]
+        );
+    }
+    /**
+     * @Route("/{slug}.html", name="app_entrenador_entrenador")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function indexEntrenadorAction($slug)
+    {
+        $m = $this->getDoctrine()->getManager();
+        $repo=$m->getRepository('AppBundle:Equipo');
+        $equipo = $repo->find($slug);
+        return $this->render(':entrenador:entrenador.html.twig',
+            [
+                'equipo'=> $equipo,
             ]
         );
     }
 
+    /**
+     * @Route("/allEntrenadores/{slug}.html", name="app_entrenador_entrenadores")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function indexAllEntrenadorAction($slug)
+    {
+        $m = $this->getDoctrine()->getManager();
+        $repo=$m->getRepository('AppBundle:Liga');
+        $liga = $repo->find($slug);
+        return $this->render(':entrenador:entrenadores.html.twig',
+            [
+                'liga'=> $liga,
+            ]
+        );
+    }
     /**
      * @Route("/upload", name="app_entrenador_upload")
      */
@@ -54,53 +84,35 @@ class EntrenadorController extends Controller
         ]);
     }
 
+
     /**
-     * @Route("/insertEntrenador", name="app_entrenador_insertEntrenador")
+     * @Route("/insertEntrenador/{id}", name="app_entrenador_insertEntrenador")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function insertEntrenadorAction()
+    public function insertEntrenadorAction($id, Request $request)
     {
-        $p= new EntrenadorType();
-        $form = $this->createForm(EntrenadorType::class, $p);
-        return $this->render(':entrenador:form.html.twig',
-            [
-                'form' =>   $form->createView(),
-                'action'=>  $this->generateUrl('app_entrenador_doinsertEntrenador')
-            ]
-        );
-    }
-    /**
-     * @Route("/doinsertEntrenador", name="app_entrenador_doinsertEntrenador")
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function doinsertEntrenadorAction(Request $request)
-    {
-        $p=new Entrenador();
-        //añadimos creator
+        $c = new Entrenador();
         if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             throw $this->createAccessDeniedException();
         }
-        // set creator in our object
-        //is granted
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        $p->setCreador($user);
-        //create Form
-        $form=$this->createForm(EntrenadorType::class,$p);
-        $form->handleRequest($request);
-        if($form->isValid()) {
-            $m = $this->getDoctrine()->getManager();
-            $m->persist($p);
-            $m->flush();
-            $this->addFlash('messages', 'Entrenador añadido');
-            return $this->redirectToRoute('app_entrenador_entrenador');
+        $form = $this->createForm(EntrenadorType::class, $c);
+        if ($request->getMethod() == Request::METHOD_POST) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $m = $this->getDoctrine()->getManager();
+                $repo = $m->getRepository('AppBundle:Equipo');
+                $equipo = $repo->find($id);
+                $user = $this->get('security.token_storage')->getToken()->getUser();
+                $c->setCreador($user);
+                $c->setEquipo($equipo);
+                $m->persist($c);
+                $m->flush();
+                return $this->redirectToRoute('app_entrenador_entrenador', ['slug' => $id]);
+            }
         }
-        $this->addFlash('messages','Review your form data');
-        return $this->render(':entrenador:form.html.twig',
-            [
-                'form'  =>  $form->createView(),
-                'action'=>  $this->generateUrl('app_entrenador_doinsertEntrenador')
-            ]
-        );
+        return $this->render(':entrenador:form.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
@@ -115,6 +127,8 @@ class EntrenadorController extends Controller
         $m = $this->getDoctrine()->getManager();
         $repo = $m->getRepository('AppBundle:Entrenador');
         $entrenador = $repo->find($id);
+        $equipo = $entrenador->getEquipo();
+        $equipoid = $equipo->getId();
         $creator= $entrenador->getCreador().$id;
         $current = $this->getUser().$id;
 
@@ -123,99 +137,37 @@ class EntrenadorController extends Controller
         }
         $m->remove($entrenador);
         $m->flush();
-        return $this->redirectToRoute('app_entrenador_entrenador');
+        return $this->redirectToRoute('app_entrenador_entrenador',['slug' => $equipoid]);
+
     }
+
 
     /**
      * @Route("/updateEntrenador/{id}", name="app_entrenador_updateEntrenador")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function updateEntrenadorAction($id)
+    public function updateEntrenadorAction($id, Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             throw $this->createAccessDeniedException();
         }
 
-        $m=$this->getDoctrine()->getManager();
-        $repo=$m->getRepository('AppBundle:Entrenador');
-        $entrenador=$repo->find($id);
-
-        $creator= $entrenador->getCreador().$id;
-        $current = $this->getUser().$id;
-        if (($current!=$creator)&&(!$this->get('security.authorization_checker')->isGranted('ROLE_SUPER_ADMIN'))) {
-            throw $this->createAccessDeniedException();
-        }
-
-        $form=$this->createForm(EntrenadorType::class,$entrenador);
-        if($form->isValid()) {
-            $m->flush();
-            return $this->redirectToRoute('app_entrenador_entrenador');
-        }
-        return $this->render(':entrenador:form.html.twig',
-            [
-                'form'=>$form->createView(),
-                'action'=>$this->generateUrl('app_entrenador_doUpdate',['id'=>$id])
-            ]
-        );
-    }
-
-    /**
-     * @Route("/doUpdate/{id}", name="app_entrenador_doUpdate")
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function doUpdateAction($id,Request $request)
-    {
-
-        $m= $this->getDoctrine()->getManager();
-        $repo= $m->getRepository('AppBundle:Entrenador');
-        $entrenador= $repo->find($id);
-        $form=$this->createForm(EntrenadorType::class,$entrenador);
-
-        //El producto es actualizado con estos datos
-        $form->handleRequest($request);
-        $entrenador->setUpdatedAt();
-
-        if($form->isValid()){
-            $m->flush();
-            $this->addFlash('messages','Entrenador Updated');
-
-            return $this->redirectToRoute('app_entrenador_entrenador');
-        }
-
-        $this->addFlash('message' , 'Review your form');
-        return $this->render(':entrenador:form.html.twig',
-            [
-                'form'=> $form->createView(),
-                'action'=> $this->generateUrl('app_entrenador_doUpdate',['id'=>$id]),
-            ]
-        );
-    }
-
-    /**
-     * @Route("/{slug}.html", name="app_entrenador_showEntrenador")
-     */
-    public function showEntrenadorAction($slug)
-    {
         $m = $this->getDoctrine()->getManager();
-        $repository= $m->getRepository('AppBundle:Entrenador');
-        $entrenador=$repository->find($slug);
-        return $this->render(':entrenador:entrenador.html.twig', [
-            'entrenador'   => $entrenador,
+        $repo = $m->getRepository('AppBundle:Entrenador');
+        $entrenador=$repo->find($id);
+        $equipo = $entrenador->getEquipo();
+        $equipoid = $equipo->getId();
+        $form = $this->createForm(EntrenadorType::class, $entrenador);
+        if ($request->getMethod() == Request::METHOD_POST) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $m->persist($entrenador);
+                $m->flush();
+                return $this->redirectToRoute('app_entrenador_entrenador', ['slug' => $equipoid]);
+            }
+        }
+        return $this->render(':entrenador:form.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
-    /**
-     * @Route("/usuario/{slug}.html", name="app_usuario_show")
-     *
-     */
-    public function showUserAction($slug)
-    {
-        $m = $this ->getDoctrine()->getManager();
-        $repository= $m->getRepository('UserBundle:User');
-        $usuario=$repository->find($slug);
-        return $this->render('usuario/usuario.html.twig',[
-            'usuario' => $usuario,
-        ]);
-    }
-
-
 }

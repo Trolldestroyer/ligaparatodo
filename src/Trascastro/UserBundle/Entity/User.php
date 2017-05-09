@@ -65,10 +65,16 @@ class User extends BaseUser
      */
     private $equiposCreados;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Entrenador", mappedBy="entrenador")
+     */
+    private $entrenadoresCreados;
+
     public function __construct()
     {
         parent::__construct();
 
+        $this->entrenadoresCreados = new ArrayCollection();
         $this->equiposCreados = new ArrayCollection();
         $this->playersCreados = new ArrayCollection();
         $this->comentariosEquiposCreados = new ArrayCollection();

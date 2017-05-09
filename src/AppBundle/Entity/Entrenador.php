@@ -3,7 +3,6 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -24,9 +23,9 @@ class Entrenador
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Equipo", inversedBy="entrenador")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Equipo", inversedBy="equipo")
      */
-   // private $equipos;
+    private $equipo;
 
     /**
      * @var string
@@ -55,6 +54,10 @@ class Entrenador
      * @ORM\Column(name="lastname", type="string", length=255)
      */
     private $lastname;
+    /**
+     * @ORM\ManyToOne(targetEntity="Trascastro\UserBundle\Entity\User", inversedBy="entrenadoresCreados")
+     */
+    private $creador;
 
     public function __construct()
     {
@@ -74,27 +77,43 @@ class Entrenador
     }
 
     /**
-     * Set equipos
+     * Set equipo
      *
-     * @param string $equipos
+     * @param string $equipo
      *
      * @return Entrenador
      */
-    public function setEquipos($equipos)
+    public function setEquipo($equipo)
     {
-        $this->equipos = $equipos;
+        $this->equipo = $equipo;
 
         return $this;
     }
 
     /**
-     * Get equipos
+     * @return mixed
+     */
+    public function getCreador()
+    {
+        return $this->creador;
+    }
+
+    /**
+     * @param mixed $creador
+     */
+    public function setCreador($creador)
+    {
+        $this->creador = $creador;
+    }
+
+    /**
+     * Get equipo
      *
      * @return string
      */
-    public function getEquipos()
+    public function getEquipo()
     {
-        return $this->equipos;
+        return $this->equipo;
     }
 
     /**
@@ -109,6 +128,38 @@ class Entrenador
         $this->email = $email;
 
         return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
     }
 
     /**

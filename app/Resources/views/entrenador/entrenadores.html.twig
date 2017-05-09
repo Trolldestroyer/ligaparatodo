@@ -2,7 +2,9 @@
 {% extends '::base.html.twig' %}
 
 {% block body %}
-    {% for entrenador in equipo.entrenadores %}
+    <h1>All Entrenadores</h1>
+    {% for equipo in liga.equipos %}
+        {% for entrenador in equipo.entrenadores %}
     <div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12"
          style="margin-bottom: 1%; background-color: rgba(169, 245, 242, 0.26);border: 2px solid rgba(0, 0, 0, 0.3); border-radius: 10px;">
         <div class="col-lg-11 col-md-11 col-sm-11 col-xs-11"  style=" margin-bottom: 1%; padding: 1px; ">
@@ -17,6 +19,5 @@
         </div>
     </div>
         {% endfor %}
-    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"><a href="{{ path('app_entrenador_insertEntrenador',{'id': equipo.id}) }}"> ✏ Add entrenador️️ </a></div>
-
+    {% endfor %}
 {% endblock %}

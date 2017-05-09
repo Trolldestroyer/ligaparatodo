@@ -4,7 +4,6 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Image;
 use AppBundle\Entity\Liga;
-use AppBundle\Entity\Equipo;
 use AppBundle\Form\ImageType;
 use AppBundle\Form\LigaType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -203,6 +202,7 @@ class IndexController extends Controller
             'liga'   => $liga,
         ]);
     }
+
     /**
      * @Route("/usuario/{slug}.html", name="app_usuario_show")
      *
