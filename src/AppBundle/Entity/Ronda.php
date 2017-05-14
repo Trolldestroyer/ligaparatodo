@@ -42,12 +42,6 @@ class Ronda
      */
     //private $comentarios;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="partidos", type="string", length=255)
-     */
-   // private $partidos;
 
     /**
      * @var \DateTime
@@ -72,6 +66,11 @@ class Ronda
      * @ORM\ManyToOne(targetEntity="Trascastro\UserBundle\Entity\User", inversedBy="rondasCreadas")
      */
     private $creador;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Partido", mappedBy="ronda", cascade={"remove"})
+     */
+    private $partidos;
 
     public function __construct()
     {

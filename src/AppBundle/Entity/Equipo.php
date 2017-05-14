@@ -90,6 +90,7 @@ class Equipo
      */
     private $liga;
 
+
     public function __construct()
     {
         $this->puntos = 0;
@@ -99,6 +100,22 @@ class Equipo
         $this->comentarios = new ArrayCollection();
         $this->createdAt = new \DateTime();
         $this->updatedAt = $this->createdAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPartidosparticipa()
+    {
+        return $this->partidosparticipa;
+    }
+
+    /**
+     * @param mixed $partidosparticipa
+     */
+    public function setPartidosparticipa($partidosparticipa)
+    {
+        $this->partidosparticipa = $partidosparticipa;
     }
 
     /**

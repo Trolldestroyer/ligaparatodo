@@ -1,0 +1,25 @@
+{% extends '::base.html.twig' %}
+
+
+{% block body %}
+    <h1>Partido</h1>
+    <div>
+        <form method="post" action="{{ action }}" novalidate="novalidate">
+            <div>
+                <ul>
+                    {% for error in form.vars.errors %}
+                        <li>{{ error.message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div>{{ form_errors(form.name) }}{{ form_label(form.name) }}: {{ form_widget(form.name) }}</div>
+            <div>{{ form_errors(form.firstTeam) }}{{ form_label(form.firstTeam) }}: {{ form_widget(form.firstTeam) }}</div>
+            <div>{{ form_errors(form.secondTeam) }}{{ form_label(form.secondTeam) }}: {{ form_widget(form.secondTeam) }}</div>
+            <div>{{ form_errors(form.text) }}{{ form_label(form.text) }}: {{ form_widget(form.text) }}</div>
+            <div>{{ form_errors(form.date_play) }}{{ form_label(form.date_play) }}: {{ form_widget(form.date_play) }}</div>
+            {{ form_rest(form) }}
+            <div><input type="submit" value="Ok"></div>
+        </form>
+    </div>
+
+{% endblock %}

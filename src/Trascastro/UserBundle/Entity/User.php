@@ -61,24 +61,28 @@ class User extends BaseUser
     private $playersCreados;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Equipo", mappedBy="equipo")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Equipo", mappedBy="creador")
      */
     private $equiposCreados;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Entrenador", mappedBy="entrenador")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Entrenador", mappedBy="creador")
      */
     private $entrenadoresCreados;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Ronda", mappedBy="ronda")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Ronda", mappedBy="creador")
      */
     private $rondasCreadas;
-
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Partido", mappedBy="creador")
+     */
+    private $partidosCreadas;
     public function __construct()
     {
         parent::__construct();
 
+        $this->partidosCreadas = new ArrayCollection();
         $this->rondasCreadas = new ArrayCollection();
         $this->entrenadoresCreados = new ArrayCollection();
         $this->equiposCreados = new ArrayCollection();

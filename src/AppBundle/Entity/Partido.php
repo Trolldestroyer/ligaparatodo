@@ -5,12 +5,12 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Partidos
+ * Partido
  *
- * @ORM\Table(name="partidos")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\PartidosRepository")
+ * @ORM\Table(name="partido")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PartidoRepository")
  */
-class Partidos
+class Partido
 {
     /**
      * @var int
@@ -40,7 +40,7 @@ class Partidos
      *
      * @ORM\Column(name="comments", type="string", length=255)
      */
-    private $comments;
+  //  private $comments;
 
     /**
      * @var string
@@ -71,9 +71,9 @@ class Partidos
     private $firstResult;
 
     /**
-     * @var string
+     * @var int
      *
-     * @ORM\Column(name="second_result", type="string", length=255)
+     * @ORM\Column(name="second_result", type="integer")
      */
     private $secondResult;
 
@@ -84,6 +84,57 @@ class Partidos
      */
     private $winner;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Ronda", inversedBy="ronda")
+     */
+    private $ronda;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Trascastro\UserBundle\Entity\User", inversedBy="partidoCreados")
+     */
+    private $creador;
+
+
+    public function __construct()
+    {
+
+        $this->firstResult = 0;
+        $this->secondResult = 0;
+        $this->winner = "";
+
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreador()
+    {
+        return $this->creador;
+    }
+
+    /**
+     * @param mixed $creador
+     */
+    public function setCreador($creador)
+    {
+        $this->creador = $creador;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRonda()
+    {
+        return $this->ronda;
+    }
+
+    /**
+     * @param mixed $ronda
+     */
+    public function setRonda($ronda)
+    {
+        $this->ronda = $ronda;
+    }
 
     /**
      * Get id
@@ -100,7 +151,7 @@ class Partidos
      *
      * @param string $name
      *
-     * @return Partidos
+     * @return Partido
      */
     public function setName($name)
     {
@@ -124,7 +175,7 @@ class Partidos
      *
      * @param string $text
      *
-     * @return Partidos
+     * @return Partido
      */
     public function setText($text)
     {
@@ -148,7 +199,7 @@ class Partidos
      *
      * @param string $comments
      *
-     * @return Partidos
+     * @return Partido
      */
     public function setComments($comments)
     {
@@ -172,7 +223,7 @@ class Partidos
      *
      * @param string $firstTeam
      *
-     * @return Partidos
+     * @return Partido
      */
     public function setFirstTeam($firstTeam)
     {
@@ -196,7 +247,7 @@ class Partidos
      *
      * @param string $secondTeam
      *
-     * @return Partidos
+     * @return Partido
      */
     public function setSecondTeam($secondTeam)
     {
@@ -237,7 +288,7 @@ class Partidos
      *
      * @param \DateTime $updatedAt
      *
-     * @return Partidos
+     * @return Partid
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -261,7 +312,7 @@ class Partidos
      *
      * @param integer $firstResult
      *
-     * @return Partidos
+     * @return Partido
      */
     public function setFirstResult($firstResult)
     {
@@ -285,7 +336,7 @@ class Partidos
      *
      * @param string $secondResult
      *
-     * @return Partidos
+     * @return Partido
      */
     public function setSecondResult($secondResult)
     {
@@ -309,7 +360,7 @@ class Partidos
      *
      * @param string $winner
      *
-     * @return Partidos
+     * @return Partido
      */
     public function setWinner($winner)
     {

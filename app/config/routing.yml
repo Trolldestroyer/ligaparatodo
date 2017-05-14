@@ -24,3 +24,8 @@ app.ronda:
     resource: "@AppBundle/Controller/RondaController.php"
     type: annotation
     prefix: /ronda
+
+app.partido:
+    resource: "@AppBundle/Controller/PartidoController.php"
+    type: annotation
+    prefix: /partido

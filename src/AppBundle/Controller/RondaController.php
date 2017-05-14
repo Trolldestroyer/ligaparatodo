@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 class RondaController extends Controller
 {
     /**
-     * @Route("/", name="app_equip_index")
+     * @Route("/", name="app_rond_index")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function indexEquipAction()
@@ -24,7 +24,7 @@ class RondaController extends Controller
         $m = $this->getDoctrine()->getManager();
         $repo=$m->getRepository('AppBundle:Liga');
         $liga = $repo->findAll();
-        return $this->render(':ronda:index1.html.twig',
+        return $this->render(':ronda:inde.html.twig',
             [
                 'liga'=> $liga,
             ]
